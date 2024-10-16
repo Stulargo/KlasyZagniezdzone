@@ -1,65 +1,71 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Pocisk {
-    private int numerPocisku;
-    Random random = new Random();
+    private int projectileNumber;
+    private Random random;
+    private List<Fragment> fragments;
 
-    public Pocisk(int numer) {
-        this.numerPocisku = numer;
+    public Pocisk(int number) {
+        this.projectileNumber = number;
+        this.random = new Random();
+        this.fragments = new ArrayList<>();
     }
 
-    public void generujOdlamki(int liczbaOdlamkow) {
-        Random random = new Random();
-
-        for (int i = 1; i <= liczbaOdlamkow; ++i) {
-            Odlamek odlamek = new Odlamek(i);
-            odlamek.komunikat();
-            odlamek.generujKolejneOdlamki(random);
+    public void generateFragments(int fragmentCount) {
+        for (int i = 1; i <= fragmentCount; ++i) {
+            Fragment fragment = new Fragment(i);
+            fragment.displayInfo();
+            fragment.generateSubFragments();
+            fragments.add(fragment);
         }
     }
 
-     class Odlamek {
-         int numerOdlamka;
-         int wektorX;
-         int wektorY;
+    private class Fragment {
+        private int fragmentId;
+        private int deltaX;
+        private int deltaY;
+        private List<SubFragment> subFragments;
 
-        public Odlamek(int numer) {
-            this.numerOdlamka = numer;
-            this.wektorX = random.nextInt(-50,50); //new Random().nextInt(101) - 50;
-            this.wektorY = random.nextInt(-50,50); //new Random().nextInt(101) - 50;
+        public Fragment(int id) {
+            this.fragmentId = id;
+            this.deltaX = random.nextInt(-10, 11);
+            this.deltaY = random.nextInt(-10, 11);
+            this.subFragments = new ArrayList<>();
         }
 
-        public void komunikat() {
-            System.out.println("Pocisk " + Pocisk.this.numerPocisku +
-                    " - wygenerowano odłamek " + this.numerOdlamka +
-                    " o wektorze przesunięcia (x: " + wektorX + ", y: " + wektorY + ")");
+        public void displayInfo() {
+            System.out.println("Pocisk " + Pocisk.this.projectileNumber +
+                    " - Zgenerowano odłamek " + this.fragmentId +
+                    " w następujacym wektorze (x: " + deltaX + ", y: " + deltaY + ")");
         }
 
-        public void generujKolejneOdlamki(Random random) {
-            int liczbaOdlamkow = random.nextInt(7) + 1;
-            for (int i = 1; i <= liczbaOdlamkow; ++i) {
-                OdlamekOdlamka kolejnyOdłamek = new OdlamekOdlamka(numerOdlamka, i);
-                kolejnyOdłamek.komunikat();
+        public void generateSubFragments() {
+            int subFragmentCount = random.nextInt(7) + 1;
+            for (int i = 1; i <= subFragmentCount; ++i) {
+                SubFragment subFragment = new SubFragment(fragmentId, i, deltaX, deltaY);
+                subFragment.displayInfo();
+                subFragments.add(subFragment);
             }
         }
     }
 
-     class OdlamekOdlamka {
-         int numerOdlamka;
-         int numerOdlamkaRodzica;
-         int wektorX;
-         int wektorY;
+    private class SubFragment {
+        private int parentFragmentId;
+        private int subFragmentId;
+        private int deltaX;
+        private int deltaY;
 
-        public OdlamekOdlamka(int numerRodzica, int numer) {
-            this.numerOdlamkaRodzica = numerRodzica;
-            this.numerOdlamka = numer;
-            this.wektorX = random.nextInt(-50,50);
-            this.wektorY = random.nextInt(-50,50);
+        public SubFragment(int parentId, int id, int parentDeltaX, int parentDeltaY) {
+            this.parentFragmentId = parentId;
+            this.subFragmentId = id;
+            this.deltaX = parentDeltaX + random.nextInt(-10, 11);
+            this.deltaY = parentDeltaY + random.nextInt(-10, 11);
         }
 
-        public void komunikat() {
-            System.out.println("Pocisk " + Pocisk.this.numerPocisku + " - wygenerowano odłamek odłamka " +
-                    this.numerOdlamkaRodzica + "." + this.numerOdlamka + " o wektorze przesunięcia (x: " + wektorX + ", y: " + wektorY + ")");
+        public void displayInfo() {
+            System.out.println("Pocisk " + Pocisk.this.projectileNumber + " - zgenerowany odłamek z pocisku " + this.parentFragmentId + "." + this.subFragmentId + " z następującym wektorem (x: " + deltaX + ", y: " + deltaY + ")");
         }
     }
 }

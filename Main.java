@@ -29,11 +29,12 @@ public class Main {
         };
         nieKaczka.howIFly();
 
-        for (int i = 1; i <= 5; i++) {
-            int liczbaLosowychOdlamkow = random.nextInt(5) + 1;
-            Pocisk pocisk = new Pocisk(i);
-            pocisk.generujOdlamki(liczbaLosowychOdlamkow);
-            System.out.println();
-        }
+            Random random2 = new Random();
+            int projectileCount = random.nextInt(6) + 1;
+
+                for (int i = 1; i <= projectileCount; i++) {
+                    Pocisk generator = new Pocisk(i);
+                    generator.generateFragments(100);
+                }
     }
 }
